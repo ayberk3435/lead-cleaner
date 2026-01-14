@@ -5,8 +5,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 # =========================
-# 1) HARTE NO-GO WORTLISTE (fest im Script)
-#    -> nur Teilwörter, klein, möglichst "hart"
+# HARTE NO-GO WORTLISTE (fest im Script)
 # =========================
 HARD_NO_GO = [
     # Staat / Verwaltung
@@ -40,6 +39,7 @@ HARD_NO_GO = [
     "friedhof", "denkmal", "archiv", "museum", "theater", "bibli",
 ]
 
+# Whitelist: wenn Treffer -> NIE löschen
 WHITELIST = [
     "gmbh", "ug", "kg", "gbr", "ohg", "ag", "e.k", "ek",
     "gmbh & co", "gmbh&co", "se", "kgaa"
@@ -52,17 +52,23 @@ CHECK_COLS_CANDIDATES = [
     ["NAME", "NACHNAME", "ZUSATZ"],
 ]
 
-def compile_pattern(words, min_len):
+# Debug-Spalten nur im DELETED-Sheet behalten?
+DEBUG_IN_DELETED_ONLY = True
+
+
+def compile_pattern(words, min_len: int) -> re.Pattern:
     cleaned = []
     for w in words:
         w = (w or "").strip().lower()
         if len(w) >= min_len:
             cleaned.append(re.escape(w))
     if not cleaned:
-        return re.compile(r"(?!x)x")  # matcht nie
+        # Pattern, das nie matcht
+        return re.compile(r"(?!x)x")
     return re.compile("(" + "|".join(cleaned) + ")", re.IGNORECASE)
 
-def find_check_cols(df):
+
+def find_check_cols(df: pd.DataFrame) -> list[str]:
     cols = list(df.columns)
     for cand in CHECK_COLS_CANDIDATES:
         if all(c in cols for c in cand):
@@ -73,14 +79,19 @@ def find_check_cols(df):
         "Passe CHECK_COLS_CANDIDATES im Script an."
     )
 
-def first_match(pattern, s):
+
+def first_match(pattern: re.Pattern, s: str) -> str:
     m = pattern.search(s)
     return m.group(0).lower() if m else ""
 
-def clean_file(path: Path, no_go_pat, wl_pat):
+
+def clean_file(path: Path, no_go_pat: re.Pattern, wl_pat: re.Pattern):
+    # Lies ALLE Spalten, damit Output identisch bleibt
     df = pd.read_excel(path, sheet_name=0)
+
     check_cols = find_check_cols(df)
 
+    # Kombinierter Text nur aus den Check-Spalten
     text = (
         df[check_cols]
         .fillna("")
@@ -89,12 +100,30 @@ def clean_file(path: Path, no_go_pat, wl_pat):
         .str.lower()
     )
 
-    df["_WHITELIST_HIT"] = text.apply(lambda s: first_match(wl_pat, s))
-    df["_MATCH_WORD"] = text.apply(lambda s: first_match(no_go_pat, s))
+    # Schnell: vektorisierte Matches (viel schneller als apply)
+    mask_no_go = text.str.contains(no_go_pat, na=False)
+    mask_wl = text.str.contains(wl_pat, na=False)
 
-    mask_delete = (df["_MATCH_WORD"] != "") & (df["_WHITELIST_HIT"] == "")
-    cleaned = df.loc[~mask_delete].drop(columns=["_MATCH_WORD", "_WHITELIST_HIT"], errors="ignore").copy()
+    # DELETE: No-Go getroffen UND NICHT Whitelist
+    mask_delete = mask_no_go & (~mask_wl)
+
+    # Debug-Spalten (optional – kosten extra, aber hilfreich)
+    df["_MATCH_WORD"] = ""
+    df["_WHITELIST_HIT"] = ""
+
+    # Nur dort Match-Wörter berechnen, wo es relevant ist (spart Zeit)
+    idx_no_go = df.index[mask_no_go]
+    idx_wl = df.index[mask_wl]
+
+    df.loc[idx_no_go, "_MATCH_WORD"] = text.loc[idx_no_go].apply(lambda s: first_match(no_go_pat, s))
+    df.loc[idx_wl, "_WHITELIST_HIT"] = text.loc[idx_wl].apply(lambda s: first_match(wl_pat, s))
+
+    cleaned = df.loc[~mask_delete].copy()
     deleted = df.loc[mask_delete].copy()
+
+    # Wenn du Debug nur im Deleted willst: aus CLEANED entfernen
+    if DEBUG_IN_DELETED_ONLY:
+        cleaned = cleaned.drop(columns=["_MATCH_WORD", "_WHITELIST_HIT"], errors="ignore")
 
     out_path = path.with_name(path.stem + "_CLEANED.xlsx")
     with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
@@ -103,8 +132,9 @@ def clean_file(path: Path, no_go_pat, wl_pat):
 
     return out_path, int(mask_delete.sum()), check_cols
 
+
 # ---------------- GUI ----------------
-selected_files = []
+selected_files: list[Path] = []
 
 def log(msg: str):
     txt.insert("end", msg + "\n")
@@ -127,23 +157,29 @@ def run_clean():
         messagebox.showwarning("Hinweis", "Bitte zuerst Excel-Dateien auswählen.")
         return
 
+    # No-Go min 3 Zeichen, Whitelist min 2 (UG/KG)
     no_go_pat = compile_pattern(HARD_NO_GO, min_len=3)
     wl_pat = compile_pattern(WHITELIST, min_len=2)
 
     ok = 0
     for f in selected_files:
         try:
+            log(f"Starte: {f.name}")
             out, deleted_count, cols = clean_file(f, no_go_pat, wl_pat)
-            log(f"✓ {f.name} -> {out.name} | gelöscht: {deleted_count} | geprüft: {cols}")
+            log(f"✓ Fertig: {f.name} -> {out.name} | gelöscht: {deleted_count} | geprüft: {cols}")
             ok += 1
         except Exception as e:
             log(f"✗ FEHLER {f.name}: {e}")
 
-    messagebox.showinfo("Fertig", f"Fertig. Erfolgreich: {ok}/{len(selected_files)}\n\nOutput liegt im gleichen Ordner wie die Datei(en).")
+    messagebox.showinfo(
+        "Fertig",
+        f"Fertig. Erfolgreich: {ok}/{len(selected_files)}\n\n"
+        "Output liegt im gleichen Ordner wie die Datei(en)."
+    )
 
 root = tk.Tk()
 root.title("Lead Cleaner")
-root.geometry("640x360")
+root.geometry("720x420")
 
 frame = tk.Frame(root)
 frame.pack(padx=12, pady=10, fill="x")
@@ -157,7 +193,7 @@ btn_run.pack(side="left")
 lbl_files = tk.Label(frame, text="0 Datei(en) ausgewählt")
 lbl_files.pack(side="left", padx=12)
 
-txt = tk.Text(root, height=16)
+txt = tk.Text(root, height=18)
 txt.pack(padx=12, pady=10, fill="both", expand=True)
 log("Output: *_CLEANED.xlsx (Sheets: CLEANED, DELETED)")
 
