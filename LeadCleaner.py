@@ -9,7 +9,7 @@ from tkinter import filedialog, messagebox
 # =========================
 HARD_NO_GO = [
     # Staat / Verwaltung
-    "polizei", "bundespolizei", "zoll", "finanzamt", "steueramt", "gericht", "staatsan",
+    "polizei", "bundespolizei","polizeipräsidium" "zoll", "finanzamt", "steueramt", "gericht", "staatsan",
     "ministerium", "regierung", "behörde", "bürgeramt", "einwohn", "ordnungsamt",
     "sozialamt", "jobcenter", "arbeitsagentur", "agentur für arbeit",
 
@@ -92,13 +92,14 @@ def clean_file(path: Path, no_go_pat: re.Pattern, wl_pat: re.Pattern):
     check_cols = find_check_cols(df)
 
     # Kombinierter Text nur aus den Check-Spalten
-    text = (
-        df[check_cols]
-        .fillna("")
-        .astype(str)
-        .agg(" ".join, axis=1)
-        .str.lower()
-    )
+  text_cols = df.select_dtypes(include=["object"]).columns.tolist()
+text = (
+    df[text_cols]
+    .fillna("")
+    .astype(str)
+    .agg(" ".join, axis=1)
+    .str.lower()
+)
 
     # Schnell: vektorisierte Matches (viel schneller als apply)
     mask_no_go = text.str.contains(no_go_pat, na=False)
