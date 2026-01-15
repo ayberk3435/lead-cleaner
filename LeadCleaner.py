@@ -62,18 +62,44 @@ def first_match(pattern: re.Pattern, s: str) -> str:
     return m.group(0).lower() if m else ""
 
 
-def build_search_text_all_text_columns(df: pd.DataFrame) -> pd.Series:
-    text_cols = df.select_dtypes(include=["object"]).columns.tolist()
-    if not text_cols:
-        text_cols = list(df.columns)
+def build_no_go_text(df: pd.DataFrame) -> pd.Series:
+    # Spalten, in denen No-Go wirklich Sinn macht (Firma/Einrichtung/Zusatz/Bezeichnung)
+    prefer = []
+    for c in df.columns:
+        lc = str(c).lower()
+        if any(k in lc for k in [
+            "zusatz", "firma", "unternehmen", "company", "betrieb", "bezeichnung",
+            "einrichtung", "organisation", "org", "branche", "art", "notiz",
+            "name"  # <- nur wenn du "NAME" als Firmenname-Spalte nutzt
+        ]):
+            prefer.append(c)
+
+    # Bewusst ausschließen: Ort/Straße/PLZ/Tel/Mail usw.
+    blocked = []
+    for c in prefer:
+        lc = str(c).lower()
+        if any(k in lc for k in ["ort", "straße", "strasse", "plz", "telefon", "tel", "mail", "e-mail", "email"]):
+            blocked.append(c)
+    prefer = [c for c in prefer if c not in blocked]
+
+    # Fallback, falls nichts gefunden
+    if not prefer:
+        # nimm nur typische Firmenfelder, die fast immer existieren:
+        for c in df.columns:
+            if str(c).lower() in ["zusatz", "firma", "unternehmen", "name"]:
+                prefer.append(c)
+        if not prefer:
+            # notfalls gar nichts -> dann wird nichts gelöscht
+            return pd.Series([""] * len(df), index=df.index)
 
     return (
-        df[text_cols]
+        df[prefer]
         .fillna("")
         .astype(str)
         .agg(" ".join, axis=1)
         .str.lower()
     )
+
 
 
 def build_whitelist_text(df: pd.DataFrame) -> pd.Series:
@@ -100,10 +126,10 @@ def build_whitelist_text(df: pd.DataFrame) -> pd.Series:
 def clean_file(path: Path, no_go_pat: re.Pattern, wl_pat: re.Pattern):
     df = pd.read_excel(path, sheet_name=0)
 
-    text_all = build_search_text_all_text_columns(df)
+    text_no_go = build_no_go_text(df)
     text_wl = build_whitelist_text(df)
 
-    mask_no_go = text_all.str.contains(no_go_pat, na=False)
+    mask_no_go = text_no_go.str.contains(no_go_pat, na=False)
     mask_wl = text_wl.str.contains(wl_pat, na=False)
 
     mask_delete = mask_no_go & (~mask_wl)
@@ -116,7 +142,8 @@ def clean_file(path: Path, no_go_pat: re.Pattern, wl_pat: re.Pattern):
     idx_wl = df.index[mask_wl]
 
     if len(idx_no_go) > 0:
-        df.loc[idx_no_go, "_MATCH_WORD"] = text_all.loc[idx_no_go].apply(lambda s: first_match(no_go_pat, s))
+    df.loc[idx_no_go, "_MATCH_WORD"] = text_no_go.loc[idx_no_go].apply(lambda s: first_match(no_go_pat, s))
+
     if len(idx_wl) > 0:
         df.loc[idx_wl, "_WHITELIST_HIT"] = text_wl.loc[idx_wl].apply(lambda s: first_match(wl_pat, s))
 
