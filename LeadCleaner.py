@@ -142,10 +142,18 @@ def clean_file(path: Path, no_go_pat: re.Pattern, wl_pat: re.Pattern):
     idx_wl = df.index[mask_wl]
 
     if len(idx_no_go) > 0:
-    df.loc[idx_no_go, "_MATCH_WORD"] = text_no_go.loc[idx_no_go].apply(lambda s: first_match(no_go_pat, s))
+        df.loc[idx_no_go, "_MATCH_WORD"] = (
+            text_no_go.loc[idx_no_go]
+            .apply(lambda s: first_match(no_go_pat, s))
+    )
+
 
     if len(idx_wl) > 0:
-        df.loc[idx_wl, "_WHITELIST_HIT"] = text_wl.loc[idx_wl].apply(lambda s: first_match(wl_pat, s))
+        df.loc[idx_wl, "_WHITELIST_HIT"] = (
+            text_wl.loc[idx_wl]
+            .apply(lambda s: first_match(wl_pat, s))
+    )
+
 
     cleaned = df.loc[~mask_delete].copy()
     deleted = df.loc[mask_delete].copy()
