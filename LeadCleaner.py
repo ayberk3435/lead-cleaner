@@ -42,10 +42,43 @@ HARD_NO_GO = [
 # =========================
 # WHITELIST (wenn Treffer -> NIE löschen)
 # =========================
-WHITELIST = [
-    "gmbh", "ug", "kg", "gbr", "ohg", "ag", "e.k", "ek",
-    "gmbh & co", "gmbh&co", "se", "kgaa"
-]
+def compile_no_go_pattern(words: list[str], min_len: int = 3) -> re.Pattern:
+    cleaned = [re.escape(w.strip().lower()) for w in words if w and len(w.strip()) >= min_len]
+    if not cleaned:
+        return re.compile(r"(?!x)x")
+    return re.compile("(" + "|".join(cleaned) + ")", re.IGNORECASE)
+
+def compile_whitelist_pattern() -> re.Pattern:
+    # Matcht Rechtsformen nur als eigenständige Tokens (nicht mitten im Wort!)
+    # Beispiele: "GmbH", "UG", "KG", "GbR", "OHG", "AG", "SE", "KGaA", "e.K."
+    return re.compile(
+        r"(?<!\w)("
+        r"gmbh(\s*&\s*co(\.\s*kg)?)?|"
+        r"ug|kg|gbr|ohg|ag|se|kgaa|"
+        r"e\.?\s*k\.?"
+        r")(?!\w)",
+        re.IGNORECASE
+    )
+def build_whitelist_text(df: pd.DataFrame) -> pd.Series:
+    # Nur Felder, wo Rechtsformen realistisch sind
+    prefer = []
+    for c in df.columns:
+        lc = str(c).lower()
+        if any(k in lc for k in ["zusatz", "firma", "unternehmen", "company", "name", "nachname"]):
+            prefer.append(c)
+
+    if not prefer:
+        # Fallback: wenn nichts passt, nimm trotzdem alle Textspalten
+        prefer = df.select_dtypes(include=["object"]).columns.tolist()
+
+    return (
+        df[prefer]
+        .fillna("")
+        .astype(str)
+        .agg(" ".join, axis=1)
+        .str.lower()
+    )
+
 
 # Debug-Spalten in CLEANED entfernen (sinnvoll für Endnutzer)
 DEBUG_IN_DELETED_ONLY = True
@@ -89,15 +122,19 @@ def clean_file(path: Path, no_go_pat: re.Pattern, wl_pat: re.Pattern):
     text = build_search_text_all_text_columns(df)
 
     # Schnell: vektorisierte Contains
-    mask_no_go = text.str.contains(no_go_pat, na=False)
-    mask_wl = text.str.contains(wl_pat, na=False)
+text_all = build_search_text_all_text_columns(df)   # No-Go sucht überall
+text_wl  = build_whitelist_text(df)                 # Whitelist nur in "Firma/Zusatz/Name"
 
-    # DELETE nur wenn No-Go getroffen UND NICHT whitelist
-    mask_delete = mask_no_go & (~mask_wl)
+mask_no_go = text_all.str.contains(no_go_pat, na=False)
+mask_wl    = text_wl.str.contains(wl_pat, na=False)
+
+mask_delete = mask_no_go & (~mask_wl)
+
 
     # Debug-Spalten
-    df["_MATCH_WORD"] = ""
-    df["_WHITELIST_HIT"] = ""
+df.loc[idx_no_go, "_MATCH_WORD"] = text_all.loc[idx_no_go].apply(lambda s: first_match(no_go_pat, s))
+df.loc[idx_wl, "_WHITELIST_HIT"] = text_wl.loc[idx_wl].apply(lambda s: first_match(wl_pat, s))
+
 
     # Treffer-Wörter nur wo nötig berechnen
     idx_no_go = df.index[mask_no_go]
@@ -147,8 +184,9 @@ def run_clean():
         messagebox.showwarning("Hinweis", "Bitte zuerst Excel-Dateien auswählen.")
         return
 
-    no_go_pat = compile_pattern(HARD_NO_GO, min_len=3)
-    wl_pat = compile_pattern(WHITELIST, min_len=2)
+no_go_pat = compile_no_go_pattern(HARD_NO_GO, min_len=3)
+wl_pat = compile_whitelist_pattern()
+
 
     ok = 0
     for f in selected_files:
