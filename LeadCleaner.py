@@ -202,3 +202,4 @@ txt.pack(padx=12, pady=10, fill="both", expand=True)
 log("Output: *_CLEANED.xlsx (Sheets: CLEANED, DELETED)")
 
 root.mainloop()
+
