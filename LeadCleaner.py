@@ -29,6 +29,8 @@ HARD_NO_GO = [
     "rechtsanwalt", "anwalt", "kanzlei", "notar", "notariat",
 
     "friedhof", "denkmal", "archiv", "museum", "theater", "bibli",
+
+    "mcdonalds", "beamt", "beam"
 ]
 
 DEBUG_IN_DELETED_ONLY = True
