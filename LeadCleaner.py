@@ -30,7 +30,7 @@ HARD_NO_GO = [
 
     "friedhof", "denkmal", "archiv", "museum", "theater", "bibli",
 
-    "mcdonalds", "beamt", "beam"
+    "mcdonalds", "beamt", "beam", "burger king", "aldi", "lidl"
 ]
 
 DEBUG_IN_DELETED_ONLY = True
