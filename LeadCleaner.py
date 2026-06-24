@@ -179,7 +179,7 @@ HARD_NO_GO = [
     # ==================================================
     "bank", "sparkasse", "volksbank", "raiffeisenbank",
     "sparda-bank", "postbank", "deutsche bank", "commerzbank",
-    "targobank", "santander", "ing-diba", "ing ", "dkb",
+    "targobank", "santander", "ing-diba", "dkb",
     "n26", "finanzberatung", "vermögensberatung", "vermoegensberatung",
     "dvag", "mlp", "tecis", "ovb",
 
@@ -207,7 +207,7 @@ HARD_NO_GO = [
     # GROSSE EINZELHANDELSKETTEN
     # ==================================================
     "ikea", "poco", "mömax", "moemax", "xxxlutz", "roller",
-    "hornbach", "obi", "bauhaus", "toom", "hagebaumarkt",
+    "hornbach", "bauhaus", "toom", "hagebaumarkt",
     "mediamarkt", "media markt", "saturn", "expert",
     "conrad", "cyberport", "gravis",
     "decathlon", "intersport", "sportcheck",
@@ -225,7 +225,7 @@ HARD_NO_GO = [
     "bmw", "mercedes", "mercedes-benz", "audi", "volkswagen", "vw ",
     "opel", "ford", "toyota", "hyundai", "kia", "skoda", "seat",
     "nissan", "renault", "peugeot", "citroen", "fiat",
-    "atu", "pitstop", "vergoelst", "euromaster",
+    "pitstop", "vergoelst", "euromaster",
     "tüv", "tuev", "dekra", "gtü", "gtue", "küs", "kues",
 
     # ==================================================
