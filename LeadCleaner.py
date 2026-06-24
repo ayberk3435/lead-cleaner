@@ -76,7 +76,7 @@ HARD_NO_GO = [
     "krankenhaus", "klinikum", "klinik", "universitätsklinikum", "universitaetsklinikum",
     "arzt", "ärztin", "aerztin", "zahnarzt", "zahnärztin", "zahnaerztin",
     "apotheke", "notfallpraxis", "reha", "rehazentrum",
-    "sanatorium", "pflegeheim", "altenheim", "seniorenheim",
+    "sanatorium",
     "krankenkasse", "aok", "barmer", "tk", "techniker krankenkasse",
     "dak", "ikk", "knappschaft", "bkk",
 
@@ -89,7 +89,7 @@ HARD_NO_GO = [
     "hochschule", "universität", "universitaet", "fachhochschule",
     "uni ", "fh ", "campus", "studentenwerk", "studierendenwerk",
     "akademie", "bildungszentrum", "weiterbildungszentrum",
-    "volkshochschule", "vhs", "kita", "kindergarten", "kindertagesstätte", "kindertagesstaette",
+    "volkshochschule", "vhs",
     "familienzentrum", "schulamt", "bildungswerk",
 
     # ==================================================
@@ -232,51 +232,14 @@ HARD_NO_GO = [
     # LOGISTIK / POST / PAKETDIENSTE
     # ==================================================
     "deutsche post", "dhl", "dpd", "gls", "hermes", "ups",
-    "fedex", "trans-o-flex", "spedition", "logistikzentrum",
-    "paketshop", "postfiliale", "briefzentrum",
+    "fedex", "trans-o-flex", "postfiliale", "briefzentrum",
 
-    # ==================================================
-    # HOTELS / UNTERKÜNFTE / TOURISMUS
-    # ==================================================
-    "hotel", "hostel", "pension", "ferienwohnung", "ferienhaus",
-    "airbnb", "booking.com", "reisebüro", "reisebuero",
-    "tourist information", "tourismusbüro", "tourismusbuero",
-    "jugendherberge", "motel", "b&b hotel", "ibis", "novotel",
-    "mercure", "motel one", "holiday inn", "maritim",
 
-    # ==================================================
-    # GASTRO ALLGEMEIN
-    # ==================================================
-    "restaurant", "imbiss", "bistro", "cafe", "café",
-    "kneipe", "bar", "pub", "shisha", "pizzeria",
-    "döner", "doener", "kebab", "grillhaus",
-    "eiscafe", "eiscafé", "baeckerei", "bäckerei",
-    "konditorei", "metzgerei", "fleischerei",
-
-    # ==================================================
-    # INDUSTRIE / PRODUKTION / HANDWERK, falls keine Zielgruppe
-    # ==================================================
-    "industrie", "produktion", "maschinenbau", "metallbau",
-    "stahlbau", "anlagenbau", "elektrotechnik",
-    "schreinerei", "tischlerei", "malerbetrieb",
-    "dachdecker", "klempner", "sanitär", "sanitaer",
-    "heizung", "klima", "kälte", "kaelte",
-    "bauunternehmen", "baustoffe", "gerüstbau", "geruestbau",
-
-    # ==================================================
-    # IMMOBILIEN / HAUSVERWALTUNG
-    # ==================================================
-    "immobilien", "makler", "hausverwaltung", "wohnungsbau",
-    "baugenossenschaft", "wohnungsgenossenschaft",
-    "grundstück", "grundstueck", "liegenschaft",
 
     # ==================================================
     # CALLCENTER / AGENTUREN / B2B, falls keine Zielgruppe
     # ==================================================
     "callcenter", "call center", "telemarketing",
-    "werbeagentur", "marketingagentur", "seo agentur",
-    "designagentur", "druckerei", "copyshop",
-    "it-service", "it service", "systemhaus", "softwarehaus",
 
     # ==================================================
     # ONLINE / TECH-GROSSKONZERNE / PLATTFORMEN
