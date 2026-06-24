@@ -8,29 +8,446 @@ from tkinter import filedialog, messagebox
 # NO-GO (Teilwörter)
 # =========================
 HARD_NO_GO = [
-    "polizei", "bundespolizei", "zoll", "finanzamt", "steueramt", "gericht", "staatsan",
-    "ministerium", "regierung", "behörde", "bürgeramt", "einwohn", "ordnungsamt",
-    "sozialamt", "jobcenter", "arbeitsagentur", "agentur für arbeit",
+     # ==================================================
+    # POLIZEI / SICHERHEIT / RETTUNG
+    # ==================================================
+    "polizei", "bundespolizei", "landespolizei", "kripo", "kriminalpolizei",
+    "schutzpolizei", "verkehrspolizei", "wasserschutzpolizei",
+    "zoll", "hauptzollamt", "zollamt", "finanzkontrolle schwarzarbeit",
+    "feuerwehr", "berufsfeuerwehr", "freiwillige feuerwehr",
+    "rettungsdienst", "notarzt", "leitstelle", "rettungsleitstelle",
+    "katastrophenschutz", "zivilschutz", "technisches hilfswerk", "thw",
+    "ordnungsdienst", "kommunaler ordnungsdienst", "stadtwache",
 
-    "kranken", "klinik", "klinikum", "arzt", "ärztin", "zahnarzt", "apothek",
-    "gesundheitsamt", "rehazentrum",
+    # ==================================================
+    # REGIERUNG / STAAT / MINISTERIEN
+    # ==================================================
+    "bundesregierung", "landesregierung", "regierung",
+    "ministerium", "bundesministerium", "landesministerium",
+    "innenministerium", "finanzministerium", "justizministerium",
+    "gesundheitsministerium", "arbeitsministerium", "wirtschaftsministerium",
+    "verkehrsministerium", "bildungsministerium", "kultusministerium",
+    "umweltministerium", "familienministerium", "sozialministerium",
+    "staatskanzlei", "kanzleramt", "bundeskanzleramt",
+    "senatsverwaltung", "bezirksregierung", "regierungspraesidium", "regierungspräsidium",
 
-    "schule", "grundschule", "realschule", "hauptschule", "gymnasium", "berufsschule",
-    "hochschule", "universität", "fachhochschule", "akademie", "bildungszentrum",
-    "vhs", "forsch", "institut",
+    # ==================================================
+    # BEHÖRDEN ALLGEMEIN
+    # ==================================================
+    "behörde", "behoerde", "bundesbehörde", "bundesbehoerde",
+    "landesbehörde", "landesbehoerde", "verwaltungsbehörde", "verwaltungsbehoerde",
+    "amt für", "amt fuer", "bundesamt", "landesamt", "kreisamt",
+    "dienststelle", "verwaltung", "verwaltungsstelle",
 
-    "feuerwehr", "rettung", "notarzt", "katastroph", "zivilschutz",
+    # ==================================================
+    # STADT / KOMMUNE / RATHAUS
+    # ==================================================
+    "rathaus", "stadtverwaltung", "gemeindeverwaltung", "kreisverwaltung",
+    "landratsamt", "bezirksamt", "bürgeramt", "buergeramt",
+    "bürgerbüro", "buergerbuero", "servicecenter stadt",
+    "einwohnermeldeamt", "meldeamt", "meldestelle",
+    "standesamt", "ordnungsamt", "gewerbeamt",
+    "fundbüro", "fundbuero", "wahlamt", "statistikamt",
+    "bürgerdienste", "buergerdienste", "kommunalverwaltung",
+    "stadt", "gemeinde", "landkreis", "kreis",
 
-    "kirche", "pfarr", "gemeinde", "bistum", "diözese", "mosche", "islam", "synagog",
+    # ==================================================
+    # FINANZ / STEUERN / ZOLL
+    # ==================================================
+    "finanzamt", "steueramt", "bundeszentralamt für steuern",
+    "bundeszentralamt fuer steuern", "steuerverwaltung",
+    "oberfinanzdirektion", "finanzverwaltung", "hauptzollamt", "zollamt",
 
-    "verein", "stiftung", "gemeinn", "e.v.", "caritas", "diakonie", "drk",
-    "rotes kreuz", "malteser", "johanniter",
+    # ==================================================
+    # ARBEIT / SOZIALES / FAMILIE
+    # ==================================================
+    "jobcenter", "arbeitsagentur", "agentur für arbeit", "agentur fuer arbeit",
+    "sozialamt", "jugendamt", "familienkasse", "elterngeldstelle",
+    "wohngeldstelle", "versorgungsamt", "integrationsamt",
+    "ausländerbehörde", "auslaenderbehoerde", "migrationsamt",
+    "flüchtlingshilfe", "fluechtlingshilfe", "asyl", "sozialdienst",
+    "seniorenbüro", "seniorenbuero", "pflegestützpunkt", "pflegestuetzpunkt",
 
-    "rechtsanwalt", "anwalt", "kanzlei", "notar", "notariat",
+    # ==================================================
+    # GESUNDHEIT / ÖFFENTLICHE MEDIZIN
+    # ==================================================
+    "gesundheitsamt", "veterinäramt", "veterinaeramt",
+    "lebensmittelüberwachung", "lebensmittelueberwachung",
+    "krankenhaus", "klinikum", "klinik", "universitätsklinikum", "universitaetsklinikum",
+    "arzt", "ärztin", "aerztin", "zahnarzt", "zahnärztin", "zahnaerztin",
+    "apotheke", "notfallpraxis", "reha", "rehazentrum",
+    "sanatorium", "pflegeheim", "altenheim", "seniorenheim",
+    "krankenkasse", "aok", "barmer", "tk", "techniker krankenkasse",
+    "dak", "ikk", "knappschaft", "bkk",
 
-    "friedhof", "denkmal", "archiv", "museum", "theater", "bibli",
+    # ==================================================
+    # SCHULEN / HOCHSCHULEN / BILDUNG
+    # ==================================================
+    "schule", "grundschule", "hauptschule", "realschule",
+    "gesamtschule", "gymnasium", "berufsschule", "förderschule", "foerderschule",
+    "sekundarschule", "privatschule", "internat",
+    "hochschule", "universität", "universitaet", "fachhochschule",
+    "uni ", "fh ", "campus", "studentenwerk", "studierendenwerk",
+    "akademie", "bildungszentrum", "weiterbildungszentrum",
+    "volkshochschule", "vhs", "kita", "kindergarten", "kindertagesstätte", "kindertagesstaette",
+    "familienzentrum", "schulamt", "bildungswerk",
 
-    "mcdonalds", "beamt", "beam", "burger king", "aldi", "lidl"
+    # ==================================================
+    # JUSTIZ / GERICHTE / RECHT
+    # ==================================================
+    "gericht", "amtsgericht", "landgericht", "oberlandesgericht",
+    "verwaltungsgericht", "arbeitsgericht", "sozialgericht",
+    "finanzgericht", "verfassungsgericht", "bundesgerichtshof",
+    "bundesverfassungsgericht", "staatsanwaltschaft", "generalstaatsanwaltschaft",
+    "justizvollzugsanstalt", "jva", "vollzugsanstalt",
+    "rechtsanwalt", "rechtsanwältin", "rechtsanwaeltin",
+    "anwalt", "anwältin", "anwaeltin", "kanzlei",
+    "notar", "notarin", "notariat", "gerichtsvollzieher",
+
+    # ==================================================
+    # BAU / VERKEHR / UMWELT / ÄMTER
+    # ==================================================
+    "bauamt", "bauaufsichtsamt", "bauordnungsamt",
+    "stadtplanungsamt", "planungsamt", "vermessungsamt",
+    "katasteramt", "liegenschaftsamt", "immobilienamt",
+    "umweltamt", "naturschutzbehörde", "naturschutzbehoerde",
+    "straßenverkehrsamt", "strassenverkehrsamt",
+    "verkehrsamt", "kfz-zulassungsstelle", "zulassungsstelle",
+    "führerscheinstelle", "fuehrerscheinstelle",
+    "tiefbauamt", "hochbauamt", "grünflächenamt", "gruenflaechenamt",
+    "gartenamt", "forstamt", "wasserwirtschaftsamt",
+
+    # ==================================================
+    # ÖFFENTLICHE BETRIEBE / EINRICHTUNGEN
+    # ==================================================
+    "stadtwerke", "gemeindewerke", "wasserwerk", "wasserwerke",
+    "abwasserbetrieb", "abwasserverband", "entsorgungsbetrieb",
+    "abfallwirtschaft", "müllabfuhr", "muellabfuhr", "recyclinghof",
+    "wertstoffhof", "friedhof", "friedhofsamt", "bestattung",
+    "stadtarchiv", "archiv", "museum", "bibliothek", "bücherei", "buecherei",
+    "theater", "oper", "konzerthaus", "philharmonie",
+    "volksbank-stadion", "stadthalle", "bürgerhaus", "buergerhaus",
+
+    # ==================================================
+    # KIRCHEN / RELIGION
+    # ==================================================
+    "kirche", "pfarr", "pfarramt", "kirchengemeinde",
+    "bistum", "diözese", "dioezese", "evangelisch", "katholisch",
+    "moschee", "islam", "islamisch", "synagoge", "jüdisch", "juedisch",
+    "tempel", "religionsgemeinschaft",
+
+    # ==================================================
+    # VEREINE / GEMEINNÜTZIG / HILFSORGANISATIONEN
+    # ==================================================
+    "verein", "e.v.", "ev.", "gemeinnützig", "gemeinnuetzig",
+    "stiftung", "förderverein", "foerderverein",
+    "caritas", "diakonie", "drk", "deutsches rotes kreuz",
+    "rotes kreuz", "malteser", "johanniter", "awo", "arbeiterwohlfahrt",
+    "lebenshilfe", "tafel", "kinderschutzbund", "sozialverband",
+    "vdk", "paritätischer", "paritaetischer", "nabu", "bUND", "greenpeace",
+    "tierschutzverein", "sportverein", "turnverein", "schützenverein", "schuetzenverein",
+
+    # ==================================================
+    # MILITÄR / STAATLICHE SICHERHEIT
+    # ==================================================
+    "bundeswehr", "wehrverwaltung", "verteidigungsministerium",
+    "kaserne", "marine", "heer", "luftwaffe",
+    "bundesnachrichtendienst", "bnd", "verfassungsschutz",
+
+    # ==================================================
+    # KAMMERN / VERBÄNDE / INSTITUTIONEN
+    # ==================================================
+    "ihk", "industrie- und handelskammer", "handelskammer",
+    "handwerkskammer", "hwk", "ärztekammer", "aerztekammer",
+    "apothekerkammer", "rechtsanwaltskammer", "notarkammer",
+    "steuerberaterkammer", "architektenkammer",
+    "verband", "bundesverband", "landesverband",
+    "innung", "kreishandwerkerschaft",
+
+    # ==================================================
+    # VERSICHERUNG / RENTE / BG
+    # ==================================================
+    "rentenversicherung", "deutsche rentenversicherung",
+    "unfallkasse", "berufsgenossenschaft", "bg ",
+    "versicherung", "versicherungsbüro", "versicherungsbuero",
+    "allianz", "axa", "ergo", "huk", "huk-coburg",
+    "devk", "signal iduna", "generali", "zurich", "nürnberger", "nuernberger",
+    "debeka", "continentale", "provinzial", "lvm",
+
+    # ==================================================
+    # BANKEN / FINANZEN
+    # ==================================================
+    "bank", "sparkasse", "volksbank", "raiffeisenbank",
+    "sparda-bank", "postbank", "deutsche bank", "commerzbank",
+    "targobank", "santander", "ing-diba", "ing ", "dkb",
+    "n26", "finanzberatung", "vermögensberatung", "vermoegensberatung",
+    "dvag", "mlp", "tecis", "ovb",
+
+    # ==================================================
+    # GROSSE FAST-FOOD-KETTEN
+    # ==================================================
+    "mcdonalds", "mc donalds", "mcdonald's", "mc donald's",
+    "burger king", "kfc", "kentucky fried chicken",
+    "subway", "dominos", "domino's", "pizza hut",
+    "nordsee", "vapiano", "dean & david", "dean and david",
+    "backwerk", "le crobag", "ditsch", "starbucks",
+    "tchibo", "yormas", "immergrün", "immergruen",
+
+    # ==================================================
+    # SUPERMÄRKTE / DISCOUNTER / DROGERIEN
+    # ==================================================
+    "aldi", "aldi nord", "aldi süd", "aldi sued",
+    "lidl", "rewe", "edeka", "kaufland", "netto", "netto marken-discount",
+    "penny", "tegut", "globus", "real", "metro",
+    "dm-drogerie", "dm drogerie", "dm markt", "rossmann",
+    "müller drogerie", "mueller drogerie", "budni", "budnikowsky",
+    "denns", "denn's", "alnatura",
+
+    # ==================================================
+    # GROSSE EINZELHANDELSKETTEN
+    # ==================================================
+    "ikea", "poco", "mömax", "moemax", "xxxlutz", "roller",
+    "hornbach", "obi", "bauhaus", "toom", "hagebaumarkt",
+    "mediamarkt", "media markt", "saturn", "expert",
+    "conrad", "cyberport", "gravis",
+    "decathlon", "intersport", "sportcheck",
+    "h&m", "hm ", "zara", "primark", "c&a", "ca ",
+    "peek & cloppenburg", "p&c", "reserved", "new yorker",
+    "tk maxx", "deichmann", "snipes", "foot locker",
+    "douglas", "flaconi",
+
+    # ==================================================
+    # TANKSTELLEN / AUTO-KETTEN
+    # ==================================================
+    "aral", "shell", "esso", "jet tankstelle", "totalenergies",
+    "avia", "hem tankstelle", "star tankstelle", "bft tankstelle",
+    "autohaus", "autohändler", "autohaendler",
+    "bmw", "mercedes", "mercedes-benz", "audi", "volkswagen", "vw ",
+    "opel", "ford", "toyota", "hyundai", "kia", "skoda", "seat",
+    "nissan", "renault", "peugeot", "citroen", "fiat",
+    "atu", "pitstop", "vergoelst", "euromaster",
+    "tüv", "tuev", "dekra", "gtü", "gtue", "küs", "kues",
+
+    # ==================================================
+    # LOGISTIK / POST / PAKETDIENSTE
+    # ==================================================
+    "deutsche post", "dhl", "dpd", "gls", "hermes", "ups",
+    "fedex", "trans-o-flex", "spedition", "logistikzentrum",
+    "paketshop", "postfiliale", "briefzentrum",
+
+    # ==================================================
+    # HOTELS / UNTERKÜNFTE / TOURISMUS
+    # ==================================================
+    "hotel", "hostel", "pension", "ferienwohnung", "ferienhaus",
+    "airbnb", "booking.com", "reisebüro", "reisebuero",
+    "tourist information", "tourismusbüro", "tourismusbuero",
+    "jugendherberge", "motel", "b&b hotel", "ibis", "novotel",
+    "mercure", "motel one", "holiday inn", "maritim",
+
+    # ==================================================
+    # GASTRO ALLGEMEIN
+    # ==================================================
+    "restaurant", "imbiss", "bistro", "cafe", "café",
+    "kneipe", "bar", "pub", "shisha", "pizzeria",
+    "döner", "doener", "kebab", "grillhaus",
+    "eiscafe", "eiscafé", "baeckerei", "bäckerei",
+    "konditorei", "metzgerei", "fleischerei",
+
+    # ==================================================
+    # INDUSTRIE / PRODUKTION / HANDWERK, falls keine Zielgruppe
+    # ==================================================
+    "industrie", "produktion", "maschinenbau", "metallbau",
+    "stahlbau", "anlagenbau", "elektrotechnik",
+    "schreinerei", "tischlerei", "malerbetrieb",
+    "dachdecker", "klempner", "sanitär", "sanitaer",
+    "heizung", "klima", "kälte", "kaelte",
+    "bauunternehmen", "baustoffe", "gerüstbau", "geruestbau",
+
+    # ==================================================
+    # IMMOBILIEN / HAUSVERWALTUNG
+    # ==================================================
+    "immobilien", "makler", "hausverwaltung", "wohnungsbau",
+    "baugenossenschaft", "wohnungsgenossenschaft",
+    "grundstück", "grundstueck", "liegenschaft",
+
+    # ==================================================
+    # CALLCENTER / AGENTUREN / B2B, falls keine Zielgruppe
+    # ==================================================
+    "callcenter", "call center", "telemarketing",
+    "werbeagentur", "marketingagentur", "seo agentur",
+    "designagentur", "druckerei", "copyshop",
+    "it-service", "it service", "systemhaus", "softwarehaus",
+
+    # ==================================================
+    # ONLINE / TECH-GROSSKONZERNE / PLATTFORMEN
+    # ==================================================
+    "amazon", "amazon logistics", "google", "meta", "facebook",
+    "instagram", "apple", "microsoft", "sap", "telekom",
+    "vodafone", "o2 shop", "telefonica", "1&1", "1und1",
+
+    # ==================================================
+    # ÖPNV / BAHN / FLUGHAFEN
+    # ==================================================
+    "deutsche bahn", "db reisezentrum", "bahnhof",
+    "verkehrsbetriebe", "stadtbahn", "straßenbahn", "strassenbahn",
+    "busbetrieb", "busbahnhof", "flughafen", "airport",
+    "hafen", "taxi", "taxizentrale",
+
+    # ==================================================
+    # ZEITARBEIT / PERSONALDIENSTLEISTER
+    # ==================================================
+    "zeitarbeit", "personalvermittlung", "personaldienstleistung",
+    "randstad", "adecco", "manpower", "persona service",
+    "tempton", "runtime", "timepartner", "iperdi",
+
+    # ==================================================
+    # WETTEN / CASINO / SPIELHALLE
+    # ==================================================
+    "spielhalle", "casino", "wettbüro", "wettbuero",
+    "tipico", "bet365", "merkur casino", "löwen play", "loewen play",
+
+    # ==================================================
+    # SONSTIGE NO-GO BEGRIFFE
+    # ==================================================
+    "beamt", "beamter", "beamtin", "öffentlich", "oeffentlich",
+    "öffentliche einrichtung", "oeffentliche einrichtung",
+    "kommunal", "staatlich", "bundesweit",
+    "gmbh & co kg", "ag ", "konzern", "filiale", "zentrale",
+
+
+    # ==================================================
+# AMTLICHE / ÖFFENTLICHE PERSONEN / BEAMTE
+# ==================================================
+
+"beamter", "beamtin", "beamte", "beamtinnen",
+"beamt", "verbeamtet", "staatsbediensteter", "staatsbedienstete",
+"angestellter im öffentlichen dienst", "angestellte im öffentlichen dienst",
+"angestellter im oeffentlichen dienst", "angestellte im oeffentlichen dienst",
+"öffentlicher dienst", "oeffentlicher dienst",
+"public service", "civil servant",
+
+# Sachbearbeitung / Verwaltung
+"sachbearbeiter", "sachbearbeiterin", "sachbearbeitung",
+"verwaltungsmitarbeiter", "verwaltungsmitarbeiterin",
+"verwaltungsangestellter", "verwaltungsangestellte",
+"verwaltungsfachangestellter", "verwaltungsfachangestellte",
+"verwaltungsbeamter", "verwaltungsbeamtin",
+"amtsmitarbeiter", "amtsmitarbeiterin",
+"behördenmitarbeiter", "behoerdenmitarbeiter",
+"behördenmitarbeiterin", "behoerdenmitarbeiterin",
+
+# Leitung im Amt / Behörde
+"amtsleiter", "amtsleiterin",
+"fachbereichsleiter", "fachbereichsleiterin",
+"bereichsleiter amt", "bereichsleiterin amt",
+"dezernent", "dezernentin",
+"dezernatsleiter", "dezernatsleiterin",
+"referatsleiter", "referatsleiterin",
+"abteilungsleiter behörde", "abteilungsleiter behoerde",
+"abteilungsleiterin behörde", "abteilungsleiterin behoerde",
+"dienststellenleiter", "dienststellenleiterin",
+
+# Stadt / Kommune / Politiknah
+"bürgermeister", "buergermeister",
+"bürgermeisterin", "buergermeisterin",
+"oberbürgermeister", "oberbuergermeister",
+"oberbürgermeisterin", "oberbuergermeisterin",
+"landrat", "landrätin", "landraetin",
+"stadtrat", "stadträtin", "stadtraetin",
+"gemeinderat", "gemeinderätin", "gemeinderaetin",
+"kreisrat", "kreisrätin", "kreisraetin",
+"bezirksbürgermeister", "bezirksbuergermeister",
+"bezirksbürgermeisterin", "bezirksbuergermeisterin",
+"ratsherr", "ratsfrau",
+"ratsmitglied", "fraktionsvorsitzender", "fraktionsvorsitzende",
+
+# Meldeamt / Bürgeramt / Ordnungsamt Rollen
+"standesbeamter", "standesbeamtin",
+"meldebeamter", "meldebeamtin",
+"ordnungsbeamter", "ordnungsbeamtin",
+"vollzugsbeamter", "vollzugsbeamtin",
+"kommunaler vollzugsdienst",
+"ordnungsdienstmitarbeiter", "ordnungsdienstmitarbeiterin",
+"stadtwache mitarbeiter", "stadtwache mitarbeiterin",
+
+# Polizei / Zoll / Sicherheit Personen
+"polizist", "polizistin",
+"polizeibeamter", "polizeibeamtin",
+"kriminalbeamter", "kriminalbeamtin",
+"zollbeamter", "zollbeamtin",
+"zollinspektor", "zollinspektorin",
+"hauptkommissar", "hauptkommissarin",
+"kommissar", "kommissarin",
+"wachtmeister", "wachtmeisterin",
+
+# Feuerwehr / Rettung / Katastrophenschutz Personen
+"feuerwehrmann", "feuerwehrfrau",
+"brandmeister", "brandmeisterin",
+"brandinspektor", "brandinspektorin",
+"rettungsbeamter", "rettungsbeamtin",
+"notfallsanitäter", "notfallsanitaeter",
+"notfallsanitäterin", "notfallsanitaeterin",
+"leitstellendisponent", "leitstellendisponentin",
+
+# Justiz Personen
+"richter", "richterin",
+"staatsanwalt", "staatsanwältin", "staatsanwaeltin",
+"oberstaatsanwalt", "oberstaatsanwältin", "oberstaatsanwaeltin",
+"rechtspfleger", "rechtspflegerin",
+"justizbeamter", "justizbeamtin",
+"justizvollzugsbeamter", "justizvollzugsbeamtin",
+"gerichtsvollzieher", "gerichtsvollzieherin",
+
+# Schule / Hochschule öffentlich beschäftigte Personen
+"schulleiter", "schulleiterin",
+"rektor", "rektorin",
+"konrektor", "konrektorin",
+"lehrer", "lehrerin",
+"studienrat", "studienrätin", "studienraetin",
+"oberstudienrat", "oberstudienrätin", "oberstudienraetin",
+"dozent", "dozentin",
+"wissenschaftlicher mitarbeiter", "wissenschaftliche mitarbeiterin",
+
+# Gesundheitsamt / öffentliche Medizin Rollen
+"amtsarzt", "amtsärztin", "amtsaerztin",
+"gesundheitsbeamter", "gesundheitsbeamtin",
+"hygienekontrolleur", "hygienekontrolleurin",
+"lebensmittelkontrolleur", "lebensmittelkontrolleurin",
+"veterinärbeamter", "veterinaerbeamter",
+"veterinärbeamtin", "veterinaerbeamtin",
+
+# Arbeitsagentur / Jobcenter / Sozialamt Rollen
+"fallmanager", "fallmanagerin",
+"arbeitsvermittler", "arbeitsvermittlerin",
+"leistungsberater", "leistungsberaterin",
+"sozialarbeiter amt", "sozialarbeiterin amt",
+"sozialpädagoge amt", "sozialpaedagoge amt",
+"sozialpädagogin amt", "sozialpaedagogin amt",
+"jugendamtsmitarbeiter", "jugendamtsmitarbeiterin",
+
+# Ausländerbehörde / Migration
+"sachbearbeiter ausländerbehörde", "sachbearbeiter auslaenderbehoerde",
+"sachbearbeiterin ausländerbehörde", "sachbearbeiterin auslaenderbehoerde",
+"integrationsbeauftragter", "integrationsbeauftragte",
+"migrationsbeauftragter", "migrationsbeauftragte",
+
+# Finanzamt / Steuer / Prüfer
+"finanzbeamter", "finanzbeamtin",
+"steuerbeamter", "steuerbeamtin",
+"betriebsprüfer", "betriebspruefer",
+"betriebsprüferin", "betriebsprueferin",
+"steuerprüfer", "steuerpruefer",
+"steuerprüferin", "steuerprueferin",
+
+# Bauamt / Umweltamt / Verkehr
+"bauprüfer", "baupruefer",
+"bauprüferin", "bauprueferin",
+"baukontrolleur", "baukontrolleurin",
+"verkehrsüberwacher", "verkehrsueberwacher",
+"verkehrsüberwacherin", "verkehrsueberwacherin",
+"umweltbeauftragter", "umweltbeauftragte",
+"naturschutzbeauftragter", "naturschutzbeauftragte"
+    
 ]
 
 DEBUG_IN_DELETED_ONLY = True
